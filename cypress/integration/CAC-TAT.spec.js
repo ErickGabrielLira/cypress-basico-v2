@@ -1,7 +1,7 @@
 // <reference types="Cypress" />
 
 beforeEach(() => {
-    cy.visit('.src/index.html') // Visita o site localmente
+    cy.visit('./src/index.html') // Visita o site localmente
 });
 
 describe('Central de Atendimento ao Cliente TAT - Modulo 1 (Type)', function () {
