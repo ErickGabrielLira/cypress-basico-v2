@@ -1,0 +1,264 @@
+// <reference types="Cypress" />
+
+beforeEach(() => {
+    cy.visit('../../cypress-basico-v2/src/index.html') // Visita o site localmente
+});
+
+describe.skip('Central de Atendimento ao Cliente TAT - Modulo 1 (Type)', function () {
+
+    it('verifica o título da aplicação', function () {
+        // cy.title busca o título. ".should = deve(ser.igual)", ou seja, o titulo deve ser igual a ......
+        cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')
+    })
+
+    it('preenche os campos obrigatórios e envia o formulário', function () {
+
+        const textoLongo = 'Teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste, teste,'
+
+        cy.get('#firstName').type('Erick')
+        cy.get('#lastName').type('Lira')
+        cy.get('#email').type('erick@hotmail.com')
+        cy.get('#open-text-area').type(textoLongo, { delay: 0 }) // Tira todo o delay da escrita
+        cy.get('.button').click()
+
+        cy.get('.success') // Pega a mensagem de sucesso
+            .should('be.visible')
+    });
+
+
+    it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
+        cy.get('#firstName').type('Erick')
+        cy.get('#lastName').type('Lira')
+        cy.get('#email').type('erick@hotmail,com')
+        cy.get('#open-text-area').type('Olá!', { delay: 0 }) // Tira todo o delay da escrita
+        cy.get('.button').click()
+
+        cy.get('.error')
+            .should('be.visible')
+    });
+
+
+    it('Campo telefone continua vazio quando preenchido com valor não-numérico', () => {
+        cy.get('#phone')
+            .type('abcdefghij')
+            .should('have.value', '')
+    });
+
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
+        cy.get('#firstName').type('Erick')
+        cy.get('#lastName').type('Lira')
+        cy.get('#email').type('erick@hotmail.com')
+        cy.get('#phone-checkbox').click()
+        cy.get('#open-text-area').type('Olá!') // Tira todo o delay da escrita
+        cy.get('.button').click()
+
+
+        cy.get('.error')
+            .should('be.visible')
+    });
+
+    it('preenche e limpa os campos nome, sobrenome, email e telefone', () => {
+        cy.get('#firstName') // Pegou o seletor
+            .type('Erick') // Escreveu o nome
+            .should('have.value', 'Erick') // Validou que está com o nome
+            .clear() // Limpou
+            .should('have.value', '') // Validou que limpou
+
+        cy.get('#lastName')
+            .type('Lira')
+            .should('have.value', 'Lira')
+            .clear()
+            .should('have.value', '')
+
+        cy.get('#email')
+            .type('erick@hotmail.com')
+            .should('have.value', 'erick@hotmail.com')
+            .clear()
+            .should('have.value', '')
+
+        cy.get('#phone')
+            .type('999333444')
+            .should('have.value', '999333444')
+            .clear()
+            .should('have.value', '')
+
+    });
+
+    it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
+        cy.get('.button').click()
+
+        cy.get('.error')
+            .should('be.visible')
+    });
+
+    it('envia o formuário com sucesso usando um comando customizado', () => {
+        cy.novoComando('Gabriel', 'Lira', 'gabriel@hotmail.com', 'Olarrr!')
+
+        cy.get('.success') // Pega a mensagem de sucesso
+            .should('be.visible')
+    });
+
+
+    it('Teste com contains', () => {
+
+        cy.get('#firstName').type('Erick')
+        cy.get('#lastName').type('Lira')
+        cy.get('#email').type('erick@hotmail.com')
+        cy.get('#open-text-area').type('Teste')
+
+        cy.contains('button', 'Enviar').click()
+        // Pega o elemento do tipo botão que contém algo com "Enviar"
+
+
+        cy.get('.success')
+            .should('be.visible')
+    });
+})
+
+describe.skip('Central de Atendimento ao Cliente TAT - Modulo 2 (Select)', () => {
+    it('seleciona um produto (YouTube) por seu texto', () => {
+
+        /* cy.get('#product').select('blog') */ // Pegando pelo seletor do select
+
+        /* cy.get('select').select('Blog') */ // Pegando pelo que tem no Texto
+
+        /* cy.get('select').select('blog') */ // Pegando pelo que tem no value
+
+        /* cy.get('select').select(2) */ // Pegando pelo indice
+
+
+        cy.get('select').select('mentoria').should('have.value', 'mentoria')
+    });
+
+    it('seleciona um produto (Mentoria) por seu valor (value)', () => {
+
+        cy.get('select').select(1).should('have.value', 'blog')
+
+    });
+
+
+    it('seleciona um produto (YouTube) por seu texto', () => {
+
+        cy.get('select').select('YouTube').should('have.value', 'youtube')
+
+    });
+});
+
+describe.skip('Central de Atendimento ao Cliente TAT - Modulo 3 (Check)', () => {
+
+    it('marca o tipo de atendimento "Feedback"', () => {
+
+        cy.get('input[type="radio"][value="feedback"]')
+            .check()
+            .should('have.value', 'feedback')
+
+    });
+
+    it('marca cada tipo de atendimento', () => {
+
+        cy.get('input[type="radio"]').check()
+            .should('have.length', 3) // Confirma que tem 3 elementos
+            .each(function ($radio) { // Cria função com argumento rádio, e faz os comandos para cada elemento
+                cy.wrap($radio).check() // Marca o 1o.... depois o 2o... depois o 3o....
+                cy.wrap($radio).should('be.checked') // Valida o check do 1o.... depois do 2o... depois do 3o...
+            })
+    });
+});
+
+describe.skip('Central de Atendimento ao Cliente TAT - Modulo 4 (Marca e desmarca Checkbox)', () => {
+
+    it('marca ambos checkboxes, depois desmarca o último', () => {
+
+        cy.get('input[type="checkbox"]') // Pega todos os elementos checkbox
+            .check() // Faz o check em todos
+            .should('be.checked') // Valida que ambos foram marcados
+            .last() // Pega apenas o último elemento
+            .uncheck() // Desmarca
+            .should('not.be.checked') // Valida que foi desmarcado
+
+    });
+
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
+
+        cy.get('#firstName').type('Erick')
+        cy.get('#lastName').type('Lira')
+        cy.get('#email').type('erick@hotmail.com')
+        cy.get('#phone-checkbox').check()
+        cy.get('#open-text-area').type('Olá!') // Tira todo o delay da escrita
+        cy.get('.button').click()
+
+
+        cy.get('.error')
+            .should('be.visible')
+
+        cy.get('#phone-checkbox').uncheck() // Desmarquei o telefone
+        cy.get('.button', { delay: 10 }).click() // Mandei aguardar 10seg para clicar no butão de enviar
+
+        cy.get('.error',)
+            .should('not.be.visible') // Verifiquei se ainda existe o erro.
+
+    });
+});
+
+describe.skip('Central de Atendimento ao Cliente TAT - Modulo 5 (SelectFile)', () => {
+
+    it('seleciona um arquivo da pasta fixtures', () => {
+        cy.get('input[type="file"]#file-upload') // ou cy.get('#file-upload') ou cy.get('input[type="file"]')
+            .should('not.have.value')
+            .selectFile('./cypress/fixtures/example.json')
+            .should(input => { // ou .then()
+                expect(input[0].files[0].name).to.equal('example.json')
+            })
+    });
+
+    it('seleciona um arquivo simulando um drag-and-drop', () => {
+        cy.get('input[type="file"]#file-upload') // ou cy.get('#file-upload') ou cy.get('input[type="file"]')
+            .should('not.have.value')
+            .selectFile('./cypress/fixtures/example.json', { action: 'drag-drop' })
+            .should(input => { // ou .then()
+                expect(input[0].files[0].name).to.equal('example.json')
+            })
+    });
+
+    it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', () => {
+
+        // Faz importação direta do fixture porque o cy.fixture já indica que está na pasta de fixture, logo não irá precisar colocar o caminho. E postoriormente podemos usar um alias para indicar o nome.
+        cy.fixture('example.json').as('ficheiroParaUpload')
+
+        cy.get('input[type="file"]#file-upload')
+            .selectFile('@ficheiroParaUpload') // Sempre que usar o alias, é preciso chamar com "@"
+            .should(input => { // ou .then()
+                expect(input[0].files[0].name).to.equal('example.json')
+            })
+
+    });
+
+});
+
+describe.skip('Central de Atendimento ao Cliente TAT - Modulo 6 (Remoção de link com abertura de nova aba)', () => {
+    it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', () => {
+        cy.get('#privacy a') // Pega o selector que é privacy e que tenha algo com <a>
+            .should('have.attr', 'target', '_blank')
+        // Verifica que ao apertar neste selector, vai abrir uma nova aba, por causa do "target"
+    });
+
+    it('acessa a página da política de privacidade removendo o target e então clicando no link', () => {
+        cy.get('#privacy a')
+            .invoke('removeAttr', 'target') // Remove o atributo "target", fazendo com que ao clicar, não vai abrir em outra aba. Vai permanecer na mesma aba
+            .click() // Ao clicar, abre a politica de privacidade, porém, na mesma aba
+        cy.contains('Talking About Testing').should('be.visible')
+        // Ao abrir o link na mesma aba, irá procurar se contém o texto acima.
+
+    });
+
+    it('testa a página da política de privacidade de forma independente', () => {
+        cy.get('#privacy a')
+            .invoke('removeAttr', 'target') // Remove o atributo "target", fazendo com que ao clicar, não vai abrir em outra aba. Vai permanecer na mesma aba
+            .click() // Ao clicar, abre a politica de privacidade, porém, na mesma aba
+        
+        cy.contains('Talking About Testing').should('be.visible')
+        // Ao abrir o link na mesma aba, irá procurar se contém o texto acima.
+
+    });
+
+});
