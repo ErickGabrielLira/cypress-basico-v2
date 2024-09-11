@@ -1,10 +1,10 @@
 // <reference types="Cypress" />
 
 beforeEach(() => {
-    cy.visit('../../cypress-basico-v2/src/index.html') // Visita o site localmente
+    cy.visit('.src/index.html') // Visita o site localmente
 });
 
-describe.skip('Central de Atendimento ao Cliente TAT - Modulo 1 (Type)', function () {
+describe('Central de Atendimento ao Cliente TAT - Modulo 1 (Type)', function () {
 
     it('verifica o título da aplicação', function () {
         // cy.title busca o título. ".should = deve(ser.igual)", ou seja, o titulo deve ser igual a ......
@@ -115,7 +115,7 @@ describe.skip('Central de Atendimento ao Cliente TAT - Modulo 1 (Type)', functio
     });
 })
 
-describe.skip('Central de Atendimento ao Cliente TAT - Modulo 2 (Select)', () => {
+describe('Central de Atendimento ao Cliente TAT - Modulo 2 (Select)', () => {
     it('seleciona um produto (YouTube) por seu texto', () => {
 
         /* cy.get('#product').select('blog') */ // Pegando pelo seletor do select
@@ -144,7 +144,7 @@ describe.skip('Central de Atendimento ao Cliente TAT - Modulo 2 (Select)', () =>
     });
 });
 
-describe.skip('Central de Atendimento ao Cliente TAT - Modulo 3 (Check)', () => {
+describe('Central de Atendimento ao Cliente TAT - Modulo 3 (Check)', () => {
 
     it('marca o tipo de atendimento "Feedback"', () => {
 
@@ -165,7 +165,7 @@ describe.skip('Central de Atendimento ao Cliente TAT - Modulo 3 (Check)', () => 
     });
 });
 
-describe.skip('Central de Atendimento ao Cliente TAT - Modulo 4 (Marca e desmarca Checkbox)', () => {
+describe('Central de Atendimento ao Cliente TAT - Modulo 4 (Marca e desmarca Checkbox)', () => {
 
     it('marca ambos checkboxes, depois desmarca o último', () => {
 
@@ -200,7 +200,7 @@ describe.skip('Central de Atendimento ao Cliente TAT - Modulo 4 (Marca e desmarc
     });
 });
 
-describe.skip('Central de Atendimento ao Cliente TAT - Modulo 5 (SelectFile)', () => {
+describe('Central de Atendimento ao Cliente TAT - Modulo 5 (SelectFile)', () => {
 
     it('seleciona um arquivo da pasta fixtures', () => {
         cy.get('input[type="file"]#file-upload') // ou cy.get('#file-upload') ou cy.get('input[type="file"]')
@@ -235,7 +235,7 @@ describe.skip('Central de Atendimento ao Cliente TAT - Modulo 5 (SelectFile)', (
 
 });
 
-describe.skip('Central de Atendimento ao Cliente TAT - Modulo 6 (Remoção de link com abertura de nova aba)', () => {
+describe('Central de Atendimento ao Cliente TAT - Modulo 6 (Remoção de link com abertura de nova aba)', () => {
     it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', () => {
         cy.get('#privacy a') // Pega o selector que é privacy e que tenha algo com <a>
             .should('have.attr', 'target', '_blank')
